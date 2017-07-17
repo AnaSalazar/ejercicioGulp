@@ -8,6 +8,7 @@ var rutas = {
   rutaJS: "js/app.js",
   rutaSCSS: "src/assets/scss/main.scss"
 }
+
 gulp.task("prepararJS", function(){
   gulp.src(rutas.rutaJS)
     .pipe(uglify())
@@ -23,10 +24,6 @@ gulp.task("prepararCSS",function(){
     .pipe(gulp.dest("public/css"))
 })
 
-gulp.task("default",function(){
-  gulp.watch(rutas.rutaSCSS, ["prepararCSS"]);
-})
-
 gulp.task('watchChangesCSS',function(){
     browserSync.init({
         server:{
@@ -34,7 +31,7 @@ gulp.task('watchChangesCSS',function(){
         }
     })
 
-    gulp.watch("assets/scss/main.scss", ["sass-watch"] );
+    gulp.watch("src/assets/scss/main.scss", ["sass-watch"] );
 })
 
 gulp.task('sass-watch',['prepararCSS'],function(){
