@@ -5,16 +5,15 @@ var sass = require("gulp-sass");
 var browserSync = require("browser-sync").create();
 
 var rutas = {
-  rutaJS: "js/app.js",
-  rutaSCSS: "src/assets/scss/main.scss"
+  rutaHTML: "src/index.html",
+  rutaSCSS: "src/assets/scss/main.scss",
+  rutaJS: "src/assets/js/app.js"
 }
 
-gulp.task("prepararJS", function(){
-  gulp.src(rutas.rutaJS)
-    .pipe(uglify())
-    .pipe(obfuscate())
-    .pipe(gulp.dest("public/js"))
-})
+gulp.task("actualizarHTML",function(){
+  gulp.src(rutas.rutaHTML)
+  .pipe(gulp.dest("public/"))
+});
 
 gulp.task("prepararCSS",function(){
   gulp.src(rutas.rutaSCSS)
@@ -22,18 +21,34 @@ gulp.task("prepararCSS",function(){
       outputStyle: "compressed"})
     .on("error", sass.logError))
     .pipe(gulp.dest("public/css"))
+});
+
+gulp.task("prepararJS", function(){
+  gulp.src(rutas.rutaJS)
+  .pipe(uglify())
+  .pipe(obfuscate())
+  .pipe(gulp.dest("public/js"))
 })
 
-gulp.task('watchChangesCSS',function(){
+gulp.task('watchChanges',function(){
     browserSync.init({
         server:{
             baseDir: "./public"
         }
     })
+    gulp.watch(rutas.rutaHTML, ["html-watch"] );
+    gulp.watch(rutas.rutaSCSS, ["sass-watch"] );
+    gulp.watch(rutas.rutaJS, ["js-watch"] );
+});
 
-    gulp.watch("src/assets/scss/main.scss", ["sass-watch"] );
-})
+gulp.task('html-watch',['actualizarHTML'],function(){
+  browserSync.reload();
+});
 
 gulp.task('sass-watch',['prepararCSS'],function(){
     browserSync.reload();
-})
+});
+
+gulp.task('js-watch',['prepararJS'],function(){
+    browserSync.reload();
+});
